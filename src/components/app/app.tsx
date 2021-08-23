@@ -1,8 +1,16 @@
 import React from "react";
-import "./app.module.scss";
+import { Logo, RouteForm } from "components";
 
-function App() {
-  return <div className="App"></div>;
-}
+//assets
+import styles from "./app.module.scss";
+
+const App = () => {
+  return (
+    <div className={styles.wrapper}>
+      <Logo />
+      <RouteForm />
+    </div>
+  );
+};
 
 export default App;
