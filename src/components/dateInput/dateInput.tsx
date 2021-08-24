@@ -21,8 +21,8 @@ const DateInput: React.FC<DateInputProps> = ({
   changeInputHandler,
   value,
   withToday = false,
+  isError = false,
   title,
-  isError,
 }) => {
   const ref = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState<boolean>(false);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import cn from "classnames";
-import { RouteMap, DateInput } from "components";
+import { RouteMap, DateInput, VehicleSelect } from "components";
 import { getDatesStrings } from "utilites";
 
 //assets
@@ -75,25 +75,13 @@ const VehicleForm = () => {
           Vehicle number
         </div>
         <div className={styles.inputContainer}>
-          <div className={styles.selectWrapper}>
-            <select
-              defaultValue={inputValues.vehicle}
-              className={cn(styles.select, {
-                [styles.select_error]: errors.vehicle,
-              })}
-              onChange={(event) => {
-                changeInputHandler("vehicle", event.currentTarget.value);
-              }}
-            >
-              <option value="0" disabled hidden>
-                Select vehicle
-              </option>
-              <option value="">1</option>
-              <option value="">2</option>
-              <option value="">3</option>
-              <option value="">4</option>
-            </select>
-          </div>
+          <VehicleSelect
+            value={inputValues.vehicle}
+            changeInputHandler={(event) => {
+              changeInputHandler("vehicle", event.currentTarget.value);
+            }}
+            isError={errors.vehicle}
+          />
         </div>
       </div>
       <div className={styles.formItem}>
