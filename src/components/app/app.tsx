@@ -1,7 +1,7 @@
 import React from "react";
 import { Logo, RouteForm } from "components";
 
-//assets
+// assets
 import styles from "./app.module.scss";
 
 const App = () => {

@@ -3,7 +3,7 @@ import cn from "classnames";
 import { RouteMap, DateInput, VehicleSelect } from "components";
 import { getDatesStrings } from "utilites";
 
-//assets
+// assets
 import styles from "./routeForm.module.scss";
 
 type InputsValuesType = {
@@ -39,6 +39,7 @@ const VehicleForm = () => {
       ...values,
       [key]: value,
     }));
+    changeErrorHandler(key, false);
   };
 
   const changeErrorHandler = (

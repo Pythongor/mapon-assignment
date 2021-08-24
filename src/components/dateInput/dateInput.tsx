@@ -3,10 +3,10 @@ import cn from "classnames";
 
 import { getDatesStrings } from "utilites";
 
-//hooks
+// hooks
 import { useClickOutside } from "hooks/useClickOutside";
 
-//assets
+// assets
 import styles from "./dateInput.module.scss";
 
 type DateInputProps = {
@@ -45,6 +45,13 @@ const DateInput: React.FC<DateInputProps> = ({
 
   const { currentDate, yesterdayDate } = getDatesStrings();
 
+  const focus = () => {
+    if (ref.current) {
+      setIsFocused(true);
+      ref.current.select();
+    }
+  };
+
   return (
     <div className={styles.dateInputContainer}>
       <div className={styles.dateLabel}>{title}</div>
@@ -66,24 +73,15 @@ const DateInput: React.FC<DateInputProps> = ({
         onBlur={() => {
           setIsFocused(false);
         }}
-        onClick={() => {
-          if (ref.current) {
-            setIsFocused(true);
-            ref.current.select();
-          }
-        }}
+        onClick={focus}
+        onFocus={focus}
       />
       {withToday ? (
         <div
           className={cn(styles.today, {
             [styles.hide]: value !== currentDate || isFocused,
           })}
-          onClick={() => {
-            if (ref.current) {
-              setIsFocused(true);
-              ref.current.select();
-            }
-          }}
+          onClick={focus}
         >
           Today
         </div>

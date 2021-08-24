@@ -1,6 +1,6 @@
 import React from "react";
 
-//assets
+// assets
 import { ReactComponent as LogoImage } from "assets/images/logo.svg";
 import styles from "./logo.module.scss";
 
