@@ -1,0 +1,49 @@
+@import "assets/styles/variables";
+
+.dateInputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.dateLabel {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.today {
+  position: absolute;
+  bottom: 7px;
+  left: 11px;
+  user-select: none;
+}
+
+.hide {
+  display: none;
+}
+
+.dateInput {
+  display: block;
+  border: 1px solid $greyColor;
+  width: 100%;
+  height: 32px;
+  padding: 7px 0 7px 10px;
+  border-radius: 3px;
+  font-size: 14px;
+  &::-webkit-calendar-picker-indicator {
+    width: 20px;
+    margin-left: auto;
+    background-image: url("../../assets/images/calendar.svg");
+    background-size: 24px 24px;
+    background-position: right;
+  }
+  &_today {
+    &::-webkit-datetime-edit,
+    &::-webkit-inner-spin-button,
+    &::-webkit-clear-button {
+      display: none;
+    }
+  }
+  &_error {
+    border: 1px solid $redColor;
+  }
+}
