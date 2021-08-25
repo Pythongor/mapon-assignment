@@ -1,27 +1,15 @@
-import { UnitType } from "ducks/route/types";
-
-type RouteFromAPIType = {
-  type: "start" | "stop";
-  route_id: number;
-  start: { address: string; lat: number; lng: number; time: string };
-  end: { time: string };
-  polyline?: string;
-  // decoded_route?: {
-  //   points: { gmt: string; lat: number; lng: number; speed: number }[];
-  // };
-  [key: string]: unknown;
-};
-
-export type RouteResponseType = {
-  units: {
-    unit_id: number;
-    routes: RouteFromAPIType[];
-  }[];
-};
+import { UnitType, RouteResponseType } from "ducks/route/types";
 
 class ApiService {
   baseUrl = "https://mapon.com/api/v1/";
   key = "ed6dc5516f66531096e66628e84d10fd2371c87a";
+
+  encodeQueryData = (data?: { [key: string]: string }) => {
+    const encoded = [];
+    for (let d in data)
+      encoded.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
+    return encoded.join("&");
+  };
 
   async getResource<T>(
     url: string,
@@ -37,13 +25,6 @@ class ApiService {
     return await res.json();
   }
 
-  encodeQueryData = (data?: { [key: string]: string }) => {
-    const encoded = [];
-    for (let d in data)
-      encoded.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
-    return encoded.join("&");
-  };
-
   getCars = async () => {
     const res = await this.getResource<{ data: { units: UnitType[] } }>(
       "unit/list.json"
@@ -57,7 +38,7 @@ class ApiService {
       unit_id: `${unit_id}`,
       from,
       till,
-      include: "polyline",
+      include: "decoded_route",
     };
     const res = await this.getResource<{ data: RouteResponseType }>(url, data);
     return res.data;

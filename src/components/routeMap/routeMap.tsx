@@ -1,18 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import cn from "classnames";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
-
-// actions
-import { setRoutesStatus } from "ducks/route/actions";
-
-// services
-import ApiService from "services/apiService";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 // types
 import { StateType } from "store/rootReducer";
 
 // assets
+import Pin from "assets/images/pin.svg";
 import styles from "./routeMap.module.scss";
 
 const containerStyle = {
@@ -21,44 +16,19 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 56.48133,
-  lng: 23.06746,
+  lat: 56.947034,
+  lng: 24.10653,
 };
 
 type StateProps = ReturnType<typeof MSTP>;
 type DispatchProps = typeof MDTP;
 type RouteMapType = StateProps & DispatchProps;
 
-const RouteMap: React.FC<RouteMapType> = ({
-  selectedUnitId,
-  from,
-  to,
-  routesStatus,
-  setRoutesStatus,
-}) => {
-  useEffect(() => {
-    if (routesStatus === "none" && selectedUnitId && from && to) {
-      const service = new ApiService();
-      setRoutesStatus("pending");
-      if (selectedUnitId && from && to)
-        service.getRoutes(selectedUnitId, from, to).then(
-          (result) => {
-            console.log(result);
-            setRoutesStatus("ok");
-          },
-          (reason) => {
-            setRoutesStatus("error");
-            alert(`error: ${reason}`);
-          }
-        );
-    }
-  });
-
+const RouteMap: React.FC<RouteMapType> = ({ routesStatus, ends }) => {
   return (
     <div
       className={cn(styles.wrapper, {
-        // TODO set to routesStatus
-        [styles.wrapper_show]: selectedUnitId && from && to,
+        [styles.wrapper_show]: ["ok", "pending"].includes(routesStatus),
       })}
     >
       <LoadScript googleMapsApiKey="AIzaSyD7zvy7VcdB-yOiSKCgb7l46IfKuV5BghA">
@@ -75,23 +45,22 @@ const RouteMap: React.FC<RouteMapType> = ({
             draggable: false,
           }}
         >
-          {/* Child components, such as markers, info windows, etc. */}
-          <></>
+          {ends
+            ? ends.map((point, index) => (
+                <Marker key={`point_${index}`} icon={Pin} position={point} />
+              ))
+            : null}
         </GoogleMap>
       </LoadScript>
     </div>
   );
 };
 
-const MSTP = ({
-  route: { selectedUnitId, from, to, routesStatus },
-}: StateType) => ({
-  selectedUnitId,
-  from,
-  to,
+const MSTP = ({ route: { routesStatus, ends } }: StateType) => ({
   routesStatus,
+  ends,
 });
 
-const MDTP = { setRoutesStatus };
+const MDTP = {};
 
 export default connect(MSTP, MDTP)(RouteMap);

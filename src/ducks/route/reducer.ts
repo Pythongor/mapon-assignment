@@ -7,7 +7,9 @@ import {
   setUnitId,
   setFromDate,
   setToDate,
+  setRouteEnds,
 } from "./actions";
+import { prepareRoutes } from "utilites";
 
 const initialState: Readonly<RouteStateType> = {
   vehiclesStatus: "none",
@@ -17,6 +19,7 @@ const initialState: Readonly<RouteStateType> = {
   from: null,
   to: null,
   routes: [],
+  ends: null,
 };
 
 export default createReducer<RouteStateType, RouteActionType>(initialState)
@@ -43,4 +46,8 @@ export default createReducer<RouteStateType, RouteActionType>(initialState)
   .handleAction(setToDate, (state, { payload }) => ({
     ...state,
     to: `${payload}T00:00:00Z`,
-  }));
+  }))
+  .handleAction(setRouteEnds, (state, { payload }) => {
+    const { startPoint, endPoint } = prepareRoutes(payload);
+    return { ...state, ends: [startPoint, endPoint] };
+  });

@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import cn from "classnames";
 import { RouteMap, DateInput, VehicleSelect } from "components";
-import { getDatesStrings, getDaysDelta } from "utilites";
+import { getDatesStrings, getDaysDelta, prepareRoutes } from "utilites";
+
+// services
+import ApiService from "services/apiService";
 
 // actions
-import { setUnitId, setFromDate, setToDate } from "ducks/route/actions";
+import {
+  setUnitId,
+  setFromDate,
+  setToDate,
+  setRoutesStatus,
+  setRouteEnds,
+} from "ducks/route/actions";
+
+//types
+import { StateType } from "store/rootReducer";
 
 // assets
 import styles from "./routeForm.module.scss";
@@ -22,13 +34,20 @@ type ErrorsType = {
   from: boolean;
 };
 
+type StateProps = ReturnType<typeof MSTP>;
 type DispatchProps = typeof MDTP;
-type VehicleFormProps = DispatchProps;
+type VehicleFormProps = DispatchProps & StateProps;
 
 const VehicleForm: React.FC<VehicleFormProps> = ({
   setUnitId,
   setFromDate,
   setToDate,
+  setRoutesStatus,
+  setRouteEnds,
+  routesStatus,
+  selectedUnitId,
+  from,
+  to,
 }) => {
   const { currentDate, yesterdayDate } = getDatesStrings();
   const [errors, setErrors] = useState<ErrorsType>({
@@ -41,6 +60,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     from: yesterdayDate,
     to: currentDate,
   });
+  const service = new ApiService();
 
   const changeInputHandler = (
     key: "to" | "from" | "vehicle",
@@ -63,12 +83,38 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     }));
   };
 
+  useEffect(() => {
+    if (routesStatus === "pending" && selectedUnitId && from && to) {
+      getRoutes(selectedUnitId, from, to);
+    }
+  });
+
+  const getRoutes = (
+    selectedUnitId: number | null,
+    from: string | null,
+    to: string | null
+  ) => {
+    if (selectedUnitId && from && to)
+      service.getRoutes(selectedUnitId, from, to).then(
+        (result) => {
+          console.log(prepareRoutes(result));
+          setRouteEnds(result);
+          setRoutesStatus("ok");
+        },
+        (reason) => {
+          setRoutesStatus("error");
+          alert(`error: ${reason}`);
+        }
+      );
+  };
+
   const validate = () => {
     const { to, from, vehicle } = inputValues;
     const fromDate = new Date(from);
     const toDate = new Date(to);
     const moreThanMonth = getDaysDelta(from, to) > 31;
     const timeReversed = fromDate >= toDate;
+
     if (moreThanMonth || timeReversed) {
       changeErrorHandler("to", true);
       changeErrorHandler("from", true);
@@ -90,6 +136,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       setUnitId(+vehicle);
       setFromDate(from);
       setToDate(to);
+      setRoutesStatus("pending");
     }
   };
 
@@ -147,6 +194,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   );
 };
 
-const MDTP = { setUnitId, setFromDate, setToDate };
+const MSTP = ({
+  route: { routesStatus, selectedUnitId, from, to },
+}: StateType) => ({ routesStatus, selectedUnitId, from, to });
 
-export default connect(null, MDTP)(VehicleForm);
+const MDTP = {
+  setUnitId,
+  setFromDate,
+  setToDate,
+  setRoutesStatus,
+  setRouteEnds,
+};
+
+export default connect(MSTP, MDTP)(VehicleForm);
