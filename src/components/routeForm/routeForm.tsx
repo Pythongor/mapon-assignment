@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import cn from "classnames";
 import { RouteMap, DateInput, VehicleSelect } from "components";
@@ -6,6 +6,9 @@ import { getDatesStrings, getDaysDelta, prepareRoutes } from "utilites";
 
 // services
 import ApiService from "services/apiService";
+
+// hooks
+import { useInputs } from "hooks";
 
 // actions
 import {
@@ -21,18 +24,6 @@ import { StateType } from "store/rootReducer";
 
 // assets
 import styles from "./routeForm.module.scss";
-
-type InputsValuesType = {
-  vehicle: string;
-  to: string;
-  from: string;
-};
-
-type ErrorsType = {
-  vehicle: boolean;
-  to: boolean;
-  from: boolean;
-};
 
 type StateProps = ReturnType<typeof MSTP>;
 type DispatchProps = typeof MDTP;
@@ -50,38 +41,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   to,
 }) => {
   const { currentDate, yesterdayDate } = getDatesStrings();
-  const [errors, setErrors] = useState<ErrorsType>({
-    vehicle: false,
-    from: false,
-    to: false,
-  });
-  const [inputValues, setInputsValues] = useState<InputsValuesType>({
-    vehicle: "",
-    from: yesterdayDate,
-    to: currentDate,
-  });
   const service = new ApiService();
 
-  const changeInputHandler = (
-    key: "to" | "from" | "vehicle",
-    value: string
-  ) => {
-    setInputsValues((values: InputsValuesType) => ({
-      ...values,
-      [key]: value,
-    }));
-    changeErrorHandler(key, false);
-  };
-
-  const changeErrorHandler = (
-    key: "to" | "from" | "vehicle",
-    value: boolean
-  ) => {
-    setErrors((errors: ErrorsType) => ({
-      ...errors,
-      [key]: value,
-    }));
-  };
+  const { inputValues, errors, changeInputHandler, changeErrorHandler } =
+    useInputs<
+      "vehicle" | "from" | "to",
+      { vehicle: string; from: string; to: string }
+    >({
+      vehicle: "",
+      from: yesterdayDate,
+      to: currentDate,
+    });
 
   useEffect(() => {
     if (routesStatus === "pending" && selectedUnitId && from && to) {

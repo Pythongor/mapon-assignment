@@ -4,7 +4,7 @@ import cn from "classnames";
 import { getDatesStrings } from "utilites";
 
 // hooks
-import { useClickOutside } from "hooks/useClickOutside";
+import { useClickOutside } from "hooks";
 
 // assets
 import styles from "./dateInput.module.scss";
