@@ -2,18 +2,21 @@ import { createReducer } from "typesafe-actions";
 import { RouteActionType, RouteStateType } from "./types";
 import {
   setVehicles,
-  setStatus,
+  setVehiclesStatus,
+  setRoutesStatus,
   setUnitId,
   setFromDate,
   setToDate,
 } from "./actions";
 
 const initialState: Readonly<RouteStateType> = {
-  status: "none",
+  vehiclesStatus: "none",
+  routesStatus: "none",
   units: [],
   selectedUnitId: null,
   from: null,
   to: null,
+  routes: [],
 };
 
 export default createReducer<RouteStateType, RouteActionType>(initialState)
@@ -21,9 +24,13 @@ export default createReducer<RouteStateType, RouteActionType>(initialState)
     ...state,
     units: payload,
   }))
-  .handleAction(setStatus, (state, { payload }) => ({
+  .handleAction(setVehiclesStatus, (state, { payload }) => ({
     ...state,
-    status: payload,
+    vehiclesStatus: payload,
+  }))
+  .handleAction(setRoutesStatus, (state, { payload }) => ({
+    ...state,
+    routesStatus: payload,
   }))
   .handleAction(setUnitId, (state, { payload }) => ({
     ...state,

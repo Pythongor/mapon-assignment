@@ -1,0 +1,11 @@
+.wrapper {
+  height: 0;
+  width: 100%;
+  transition: height 0.3s;
+  &_show {
+    height: 200px;
+  }
+  & * {
+    cursor: initial;
+  }
+}

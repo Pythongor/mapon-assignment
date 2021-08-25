@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 
 // types
 import { StateType } from "store/rootReducer";
+import { UnitType } from "ducks/route/types";
 
 // services
 import ApiService from "services/apiService";
 
 // actions
-import { setStatus, setVehicles } from "ducks/route/actions";
+import { setVehiclesStatus, setVehicles } from "ducks/route/actions";
 
 // assets
 import styles from "./vehicleSelect.module.scss";
@@ -28,23 +29,29 @@ const VehicleSelect: React.FC<VehicleSelectProps> = ({
   value,
   isError = false,
   changeInputHandler,
-  status,
+  vehiclesStatus,
   units,
-  setStatus,
+  setVehiclesStatus,
   setVehicles,
 }) => {
   useEffect(() => {
-    if (status === "none") {
+    if (vehiclesStatus === "none") {
       const service = new ApiService();
-      setStatus("pending");
+      setVehiclesStatus("pending");
       service.getCars().then(
         ({ units }) => {
-          console.log(units);
-          setStatus("ok");
-          setVehicles(units);
+          const preparedUnits: UnitType[] = units.map(
+            ({ unit_id, number }) => ({
+              unit_id,
+              number,
+            })
+          );
+          console.log(preparedUnits, vehiclesStatus);
+          setVehicles(preparedUnits);
+          setVehiclesStatus("ok");
         },
         (reason) => {
-          setStatus("error");
+          setVehiclesStatus("error");
           alert(`error: ${reason}`);
         }
       );
@@ -75,11 +82,11 @@ const VehicleSelect: React.FC<VehicleSelectProps> = ({
   );
 };
 
-const MSTP = ({ route: { status, units } }: StateType) => ({
-  status,
+const MSTP = ({ route: { vehiclesStatus, units } }: StateType) => ({
+  vehiclesStatus,
   units,
 });
 
-const MDTP = { setStatus, setVehicles };
+const MDTP = { setVehiclesStatus, setVehicles };
 
 export default connect(MSTP, MDTP)(VehicleSelect);

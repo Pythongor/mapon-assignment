@@ -95,50 +95,54 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.title}>Route report</div>
-      <div className={cn(styles.formItem, styles.formItem_centered)}>
-        <div className={cn(styles.label, styles.label_required)}>
-          Vehicle number
+      <div className={styles.form}>
+        <div className={styles.title}>Route report</div>
+        <div className={cn(styles.formItem, styles.formItem_centered)}>
+          <div className={cn(styles.label, styles.label_required)}>
+            Vehicle number
+          </div>
+          <div className={styles.inputContainer}>
+            <VehicleSelect
+              value={inputValues.vehicle}
+              changeInputHandler={(event) => {
+                changeInputHandler("vehicle", event.currentTarget.value);
+              }}
+              isError={errors.vehicle}
+            />
+          </div>
         </div>
-        <div className={styles.inputContainer}>
-          <VehicleSelect
-            value={inputValues.vehicle}
-            changeInputHandler={(event) => {
-              changeInputHandler("vehicle", event.currentTarget.value);
-            }}
-            isError={errors.vehicle}
-          />
-        </div>
-      </div>
-      <div className={styles.formItem}>
-        <div className={styles.label}>Period</div>
-        <div className={styles.inputContainer}>
-          <DateInput
-            value={inputValues.from}
-            title="From"
-            changeInputHandler={(event) => {
-              changeInputHandler("from", event.currentTarget.value);
-            }}
-            isError={errors.from}
-          />
-          <DateInput
-            title="To"
-            withToday
-            value={inputValues.to}
-            changeInputHandler={(event) => {
-              changeInputHandler("to", event.currentTarget.value);
-            }}
-            isError={errors.to}
-          />
+        <div className={styles.formItem}>
+          <div className={styles.label}>Period</div>
+          <div className={styles.inputContainer}>
+            <DateInput
+              value={inputValues.from}
+              title="From"
+              changeInputHandler={(event) => {
+                changeInputHandler("from", event.currentTarget.value);
+              }}
+              isError={errors.from}
+            />
+            <DateInput
+              title="To"
+              withToday
+              value={inputValues.to}
+              changeInputHandler={(event) => {
+                changeInputHandler("to", event.currentTarget.value);
+              }}
+              isError={errors.to}
+            />
+          </div>
         </div>
       </div>
       <RouteMap />
-      <input
-        type="button"
-        value="generate"
-        className={styles.submit}
-        onClick={submit}
-      />
+      <div className={styles.submit}>
+        <input
+          type="button"
+          value="generate"
+          className={styles.button}
+          onClick={submit}
+        />
+      </div>
     </div>
   );
 };
