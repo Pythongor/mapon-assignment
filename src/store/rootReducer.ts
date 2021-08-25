@@ -1,22 +1,22 @@
 import { combineReducers, Reducer, CombinedState } from "redux";
 
-import { UnitsStateType } from "ducks/units/types";
+import { RouteStateType } from "ducks/route/types";
 
-import UnitsReducer from "ducks/units/reducer";
+import UnitsReducer from "ducks/route/reducer";
 
-import { UnitsActionType } from "ducks/units/types";
+import { RouteActionType } from "ducks/route/types";
 
 export type StateType = {
-  units: UnitsStateType;
+  route: RouteStateType;
 };
 
-export type ActionType = UnitsActionType;
+export type ActionType = RouteActionType;
 
 const rootReducer: Reducer<
   CombinedState<StateType>,
   ActionType
 > = combineReducers({
-  units: UnitsReducer,
+  route: UnitsReducer,
 });
 
 export default rootReducer;

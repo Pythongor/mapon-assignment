@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import cn from "classnames";
 import { RouteMap, DateInput, VehicleSelect } from "components";
-import { getDatesStrings } from "utilites";
+import { getDatesStrings, getDaysDelta } from "utilites";
+
+// actions
+import { setUnitId, setFromDate, setToDate } from "ducks/route/actions";
 
 // assets
 import styles from "./routeForm.module.scss";
@@ -18,16 +22,23 @@ type ErrorsType = {
   from: boolean;
 };
 
-const VehicleForm = () => {
-  const { currentDate } = getDatesStrings();
+type DispatchProps = typeof MDTP;
+type VehicleFormProps = DispatchProps;
+
+const VehicleForm: React.FC<VehicleFormProps> = ({
+  setUnitId,
+  setFromDate,
+  setToDate,
+}) => {
+  const { currentDate, yesterdayDate } = getDatesStrings();
   const [errors, setErrors] = useState<ErrorsType>({
     vehicle: false,
     from: false,
     to: false,
   });
   const [inputValues, setInputsValues] = useState<InputsValuesType>({
-    vehicle: "0",
-    from: "2018-11-09",
+    vehicle: "",
+    from: yesterdayDate,
     to: currentDate,
   });
 
@@ -56,16 +67,30 @@ const VehicleForm = () => {
     const { to, from, vehicle } = inputValues;
     const fromDate = new Date(from);
     const toDate = new Date(to);
-    if (fromDate >= toDate) {
+    const moreThanMonth = getDaysDelta(from, to) > 31;
+    const timeReversed = fromDate >= toDate;
+    if (moreThanMonth || timeReversed) {
       changeErrorHandler("to", true);
       changeErrorHandler("from", true);
     } else {
       changeErrorHandler("to", false);
       changeErrorHandler("from", false);
     }
-    if (vehicle === "0") {
+    if (vehicle === "") {
       changeErrorHandler("vehicle", true);
     } else changeErrorHandler("vehicle", false);
+
+    return !moreThanMonth && !timeReversed && vehicle !== "";
+  };
+
+  const submit = () => {
+    const validated = validate();
+    if (validated) {
+      const { to, from, vehicle } = inputValues;
+      setUnitId(+vehicle);
+      setFromDate(from);
+      setToDate(to);
+    }
   };
 
   return (
@@ -112,10 +137,12 @@ const VehicleForm = () => {
         type="button"
         value="generate"
         className={styles.submit}
-        onClick={validate}
+        onClick={submit}
       />
     </div>
   );
 };
 
-export default VehicleForm;
+const MDTP = { setUnitId, setFromDate, setToDate };
+
+export default connect(null, MDTP)(VehicleForm);

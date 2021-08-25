@@ -9,14 +9,10 @@ import { StateType } from "store/rootReducer";
 import ApiService from "services/apiService";
 
 // actions
-import { setStatus, setVehicles } from "ducks/units/actions";
+import { setStatus, setVehicles } from "ducks/route/actions";
 
 // assets
 import styles from "./vehicleSelect.module.scss";
-
-type StateProps = ReturnType<typeof MSTP>;
-
-type DispatchProps = typeof MDTP;
 
 type OwnProps = {
   value: string;
@@ -24,6 +20,8 @@ type OwnProps = {
   changeInputHandler?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
+type StateProps = ReturnType<typeof MSTP>;
+type DispatchProps = typeof MDTP;
 type VehicleSelectProps = StateProps & DispatchProps & OwnProps;
 
 const VehicleSelect: React.FC<VehicleSelectProps> = ({
@@ -35,9 +33,9 @@ const VehicleSelect: React.FC<VehicleSelectProps> = ({
   setStatus,
   setVehicles,
 }) => {
-  const service = new ApiService();
   useEffect(() => {
     if (status === "none") {
+      const service = new ApiService();
       setStatus("pending");
       service.getCars().then(
         ({ units }) => {
@@ -64,7 +62,7 @@ const VehicleSelect: React.FC<VehicleSelectProps> = ({
           if (changeInputHandler) changeInputHandler(event);
         }}
       >
-        <option value="0" disabled hidden>
+        <option value="" disabled hidden>
           Select vehicle
         </option>
         {units.map(({ number, unit_id }) => (
@@ -77,7 +75,7 @@ const VehicleSelect: React.FC<VehicleSelectProps> = ({
   );
 };
 
-const MSTP = ({ units: { status, units } }: StateType) => ({
+const MSTP = ({ route: { status, units } }: StateType) => ({
   status,
   units,
 });
