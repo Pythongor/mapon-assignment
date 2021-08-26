@@ -21,6 +21,8 @@ export type RouteFromAPIType = {
   decoded_route?: {
     points: { gmt: string; lat: number; lng: number; speed: number }[];
   };
+  distance: number;
+  avg_speed: number;
   [key: string]: unknown;
 };
 
@@ -38,6 +40,11 @@ export type BoundsType = {
   north: number;
 };
 
+export type TimeType = {
+  hours: number;
+  minutes: number;
+};
+
 export type StatusType = "none" | "pending" | "ok" | "error";
 
 export type RouteStateType = {
@@ -50,6 +57,8 @@ export type RouteStateType = {
   points: PointType[] | null;
   ends: [PointType, PointType] | null;
   bounds: BoundsType | null;
+  kilometers: number;
+  drivingTime: number;
 };
 
 export enum Actions {
@@ -61,7 +70,9 @@ export enum Actions {
   setToDate = "ROUTE_SET_TO_DATE",
   setPoints = "ROUTE_SET_ENCODED_POINTS",
   setRouteEnds = "ROUTE_SET_ROUTE_ENDS",
+  setKilometers = "ROUTE_SET_ROUTE_KILOMETERS",
   setBounds = "ROUTE_SET_MAP_BOUNDS",
+  setTime = "ROUTE_SET_DRIVING_TIME",
 }
 
 export type RouteActionType = ActionType<typeof actions>;

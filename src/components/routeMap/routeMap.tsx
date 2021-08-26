@@ -42,12 +42,10 @@ const RouteMap: React.FC<RouteMapType> = ({
   useEffect(() => {
     if (ref.current && bounds) {
       const { north, east, south, west } = bounds;
-      console.log(bounds);
       const fit = fitBounds(
         { ne: { lng: east, lat: north }, sw: { lng: west, lat: south } },
         { width: 600, height: 200 }
       );
-      console.log(fit.zoom);
       setCenter(fit.center);
       setZoom(fit.zoom);
     }

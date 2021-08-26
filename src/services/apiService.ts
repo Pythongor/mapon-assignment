@@ -17,7 +17,7 @@ class ApiService {
   ): Promise<T> {
     const urlParameters = this.encodeQueryData(params);
     const fullUrl = `${this.baseUrl}${url}?key=${this.key}&${urlParameters}`;
-    console.log(fullUrl);
+    console.log("fetching url:", fullUrl);
     const res = await fetch(fullUrl);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);

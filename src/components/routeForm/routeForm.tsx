@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import cn from "classnames";
-import { RouteMap, DateInput, VehicleSelect } from "components";
+import { RouteMap, DateInput, VehicleSelect, RouteInfo } from "components";
 import { getDatesStrings, getDaysDelta, parseRoutes } from "utilites";
 
 // services
@@ -19,6 +19,8 @@ import {
   setRouteEnds,
   setPoints,
   setBounds,
+  setKilometers,
+  setTime,
 } from "ducks/route/actions";
 
 //types
@@ -39,6 +41,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   setRouteEnds,
   setPoints,
   setBounds,
+  setKilometers,
+  setTime,
   routesStatus,
   selectedUnitId,
   from,
@@ -71,10 +75,18 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     if (selectedUnitId && from && to)
       service.getRoutes(selectedUnitId, from, to).then(
         (result) => {
-          console.log(parseRoutes(result));
-          const { startPoint, endPoint, points, bounds } = parseRoutes(result);
+          const {
+            startPoint,
+            endPoint,
+            points,
+            bounds,
+            kilometers,
+            drivingTime,
+          } = parseRoutes(result);
           setBounds(bounds);
           setRouteEnds([startPoint, endPoint]);
+          setKilometers(kilometers);
+          setTime(drivingTime);
           setPoints(points);
           setRoutesStatus("ok");
         },
@@ -159,6 +171,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         </div>
       </div>
       <RouteMap />
+      <RouteInfo />
       <div className={styles.submit}>
         <input
           type="button"
@@ -183,6 +196,8 @@ const MDTP = {
   setRouteEnds,
   setPoints,
   setBounds,
+  setKilometers,
+  setTime,
 };
 
 export default connect(MSTP, MDTP)(VehicleForm);

@@ -1,5 +1,12 @@
 import { createAction } from "typesafe-actions";
-import { Actions, StatusType, UnitType, PointType, BoundsType } from "./types";
+import {
+  Actions,
+  StatusType,
+  UnitType,
+  PointType,
+  BoundsType,
+  TimeType,
+} from "./types";
 
 export const setVehicles = createAction(Actions.setVehicles)<UnitType[]>();
 
@@ -15,7 +22,7 @@ export const setUnitId = createAction(Actions.setUnitId)<number | null>();
 
 export const setFromDate = createAction(Actions.setFromDate)<string | null>();
 
-export const setToDate = createAction(Actions.setToDate)<string | null>();
+export const setToDate = createAction(Actions.setToDate)<string>();
 
 export const setPoints = createAction(Actions.setPoints)<PointType[]>();
 
@@ -24,3 +31,7 @@ export const setRouteEnds = createAction(Actions.setRouteEnds)<
 >();
 
 export const setBounds = createAction(Actions.setBounds)<BoundsType>();
+
+export const setKilometers = createAction(Actions.setKilometers)<number>();
+
+export const setTime = createAction(Actions.setTime)<number>();

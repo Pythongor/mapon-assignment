@@ -15,6 +15,8 @@ type PreparedDataType = {
   endPoint: PointType;
   points: PointType[];
   bounds: BoundsType;
+  kilometers: number;
+  drivingTime: number;
 };
 
 const getNoRepeatPoints = (points: PointType[]) => {
@@ -35,8 +37,12 @@ const getNoRepeatPoints = (points: PointType[]) => {
   return uniquePoints;
 };
 
+const getMovingRoutes = (routes: RouteFromAPIType[]) => {
+  return routes.filter(({ type }) => type === "route");
+};
+
 export const getRoutePoints = (routes: RouteFromAPIType[]) => {
-  const movingRoutes = routes.filter(({ type }) => type === "route");
+  const movingRoutes = getMovingRoutes(routes);
   const points = movingRoutes.map(({ decoded_route }) =>
     decoded_route ? decoded_route.points : []
   );
@@ -71,10 +77,40 @@ export const getBounds = (
   };
 };
 
+export const getKMDriven = (routes: RouteFromAPIType[]) => {
+  const movingRoutes = getMovingRoutes(routes);
+  const distance = movingRoutes.reduce(
+    (distanceAccumulator, currentDistance) =>
+      distanceAccumulator + currentDistance.distance,
+    0
+  );
+  return distance / 1000;
+};
+
+export const getDrivingTime = (routes: RouteFromAPIType[]) => {
+  const movingRoutes = getMovingRoutes(routes);
+  const routesTimes = movingRoutes.map(
+    ({ start: { time: startTime }, end: { time: endTime } }) => [
+      startTime,
+      endTime,
+    ]
+  );
+  const routesTimeDeltas = routesTimes.map(
+    ([start, end]) => new Date(end).getTime() - new Date(start).getTime()
+  );
+  const drivingTime = routesTimeDeltas.reduce(
+    (deltaAccumulator, currentDelta) => deltaAccumulator + currentDelta,
+    0
+  );
+  return drivingTime;
+};
+
 export const parseRoutes = (data: RouteResponseType): PreparedDataType => {
   const { routes } = data.units[0];
   const { startPoint, endPoint } = getRouteEnds(routes);
+  const kilometers = getKMDriven(routes);
+  const drivingTime = getDrivingTime(routes);
   const points = getRoutePoints(routes);
   const bounds = getBounds(points);
-  return { startPoint, endPoint, points, bounds };
+  return { startPoint, endPoint, points, bounds, kilometers, drivingTime };
 };

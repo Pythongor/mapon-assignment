@@ -10,6 +10,8 @@ import {
   setRouteEnds,
   setPoints,
   setBounds,
+  setKilometers,
+  setTime,
 } from "./actions";
 
 const initialState: Readonly<RouteStateType> = {
@@ -22,6 +24,8 @@ const initialState: Readonly<RouteStateType> = {
   points: null,
   ends: null,
   bounds: null,
+  kilometers: 0,
+  drivingTime: 0,
 };
 
 export default createReducer<RouteStateType, RouteActionType>(initialState)
@@ -60,4 +64,12 @@ export default createReducer<RouteStateType, RouteActionType>(initialState)
   .handleAction(setBounds, (state, { payload }) => ({
     ...state,
     bounds: payload,
+  }))
+  .handleAction(setKilometers, (state, { payload }) => ({
+    ...state,
+    kilometers: payload,
+  }))
+  .handleAction(setTime, (state, { payload }) => ({
+    ...state,
+    drivingTime: payload,
   }));

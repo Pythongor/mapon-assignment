@@ -1,3 +1,7 @@
 export { parseRoutes } from "./apiUtilites";
 
-export { getDatesStrings, getDaysDelta } from "./dateUtilites";
+export {
+  getDatesStrings,
+  getDaysDelta,
+  getHoursAndMinutes,
+} from "./dateUtilites";
