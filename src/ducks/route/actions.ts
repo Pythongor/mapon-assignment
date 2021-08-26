@@ -1,12 +1,5 @@
 import { createAction } from "typesafe-actions";
-import {
-  Actions,
-  StatusType,
-  UnitType,
-  PointType,
-  BoundsType,
-  TimeType,
-} from "./types";
+import { Actions, StatusType, UnitType, PointType, BoundsType } from "./types";
 
 export const setVehicles = createAction(Actions.setVehicles)<UnitType[]>();
 
