@@ -59,11 +59,15 @@ export const getBounds = (
 ): { east: number; west: number; south: number; north: number } => {
   const longitudes = points.map(({ lng }) => lng);
   const latitudes = points.map(({ lat }) => lat);
+  const south = Math.min(...latitudes);
+  const west = Math.min(...longitudes);
+  const north = Math.max(...latitudes);
+  const east = Math.max(...longitudes);
   return {
-    south: Math.min(...latitudes) - 0.01,
-    west: Math.min(...longitudes) - 0.01,
-    north: Math.max(...latitudes) + 0.01,
-    east: Math.max(...longitudes) + 0.01,
+    south: south - (north - south) * 0.05,
+    west: west - (east - west) * 0.05,
+    north: north + (north - south) * 0.05,
+    east: east + (east - west) * 0.05,
   };
 };
 

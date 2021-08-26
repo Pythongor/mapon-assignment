@@ -7,6 +7,7 @@ import {
   Marker,
   Polyline,
 } from "@react-google-maps/api";
+import { fitBounds } from "google-map-react";
 
 // types
 import { StateType } from "store/rootReducer";
@@ -32,6 +33,7 @@ const RouteMap: React.FC<RouteMapType> = ({
   bounds,
 }) => {
   const ref = useRef<GoogleMap>(null);
+  const [zoom, setZoom] = useState<number>(10);
   const [center, setCenter] = useState<PointType>({
     lat: 56.947034,
     lng: 24.10653,
@@ -41,7 +43,13 @@ const RouteMap: React.FC<RouteMapType> = ({
     if (ref.current && bounds) {
       const { north, east, south, west } = bounds;
       console.log(bounds);
-      setCenter({ lat: (north + south) / 2, lng: (west + east) / 2 });
+      const fit = fitBounds(
+        { ne: { lng: east, lat: north }, sw: { lng: west, lat: south } },
+        { width: 600, height: 200 }
+      );
+      console.log(fit.zoom);
+      setCenter(fit.center);
+      setZoom(fit.zoom);
     }
   }, [bounds]);
   return (
@@ -56,7 +64,7 @@ const RouteMap: React.FC<RouteMapType> = ({
             ref={ref}
             mapContainerStyle={containerStyle}
             center={center}
-            zoom={10}
+            zoom={zoom}
             options={{
               disableDefaultUI: true,
               scrollwheel: false,
