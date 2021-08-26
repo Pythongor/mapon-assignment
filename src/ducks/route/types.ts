@@ -14,7 +14,7 @@ export type RouteType = {
 };
 
 export type RouteFromAPIType = {
-  type: "start" | "stop";
+  type: "route" | "stop";
   route_id: number;
   start: { address: string; lat: number; lng: number; time: string };
   end: { time: string };
@@ -31,6 +31,13 @@ export type RouteResponseType = {
   }[];
 };
 
+export type BoundsType = {
+  east: number;
+  west: number;
+  south: number;
+  north: number;
+};
+
 export type StatusType = "none" | "pending" | "ok" | "error";
 
 export type RouteStateType = {
@@ -40,8 +47,9 @@ export type RouteStateType = {
   selectedUnitId: number | null;
   from: string | null;
   to: string | null;
-  routes: RouteType[];
+  points: PointType[] | null;
   ends: [PointType, PointType] | null;
+  bounds: BoundsType | null;
 };
 
 export enum Actions {
@@ -51,8 +59,9 @@ export enum Actions {
   setUnitId = "ROUTE_SET_SELECTED_UNIT_ID",
   setFromDate = "ROUTE_SET_FROM_DATE",
   setToDate = "ROUTE_SET_TO_DATE",
-  setRoutes = "ROUTE_SET_ROUTES",
+  setPoints = "ROUTE_SET_ENCODED_POINTS",
   setRouteEnds = "ROUTE_SET_ROUTE_ENDS",
+  setBounds = "ROUTE_SET_MAP_BOUNDS",
 }
 
 export type RouteActionType = ActionType<typeof actions>;

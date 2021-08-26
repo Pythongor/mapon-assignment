@@ -46,7 +46,6 @@ const VehicleSelect: React.FC<VehicleSelectProps> = ({
               number,
             })
           );
-          console.log(preparedUnits, vehiclesStatus);
           setVehicles(preparedUnits);
           setVehiclesStatus("ok");
         },

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import cn from "classnames";
 import { RouteMap, DateInput, VehicleSelect } from "components";
-import { getDatesStrings, getDaysDelta, prepareRoutes } from "utilites";
+import { getDatesStrings, getDaysDelta, parseRoutes } from "utilites";
 
 // services
 import ApiService from "services/apiService";
@@ -17,6 +17,8 @@ import {
   setToDate,
   setRoutesStatus,
   setRouteEnds,
+  setPoints,
+  setBounds,
 } from "ducks/route/actions";
 
 //types
@@ -35,6 +37,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   setToDate,
   setRoutesStatus,
   setRouteEnds,
+  setPoints,
+  setBounds,
   routesStatus,
   selectedUnitId,
   from,
@@ -67,8 +71,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     if (selectedUnitId && from && to)
       service.getRoutes(selectedUnitId, from, to).then(
         (result) => {
-          console.log(prepareRoutes(result));
-          setRouteEnds(result);
+          console.log(parseRoutes(result));
+          const { startPoint, endPoint, points, bounds } = parseRoutes(result);
+          setBounds(bounds);
+          setRouteEnds([startPoint, endPoint]);
+          setPoints(points);
           setRoutesStatus("ok");
         },
         (reason) => {
@@ -174,6 +181,8 @@ const MDTP = {
   setToDate,
   setRoutesStatus,
   setRouteEnds,
+  setPoints,
+  setBounds,
 };
 
 export default connect(MSTP, MDTP)(VehicleForm);

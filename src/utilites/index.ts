@@ -1,3 +1,3 @@
-export { prepareRoutes } from "./apiUtilites";
+export { parseRoutes } from "./apiUtilites";
 
 export { getDatesStrings, getDaysDelta } from "./dateUtilites";
